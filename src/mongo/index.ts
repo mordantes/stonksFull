@@ -1,6 +1,7 @@
 require('dotenv').config()
 import mongoose from "mongoose"
 import { ProductSchema } from "./models/product"
+import { RoleSchema } from "./models/role"
 import { UserSchema } from "./models/user"
 
 const configStore = process.env
@@ -19,10 +20,11 @@ db.on('error', () => {
 
 const Products = mongoose.model('products2', ProductSchema);
 const Users = mongoose.model('users', UserSchema);
-
+const Roles = mongoose.model('roles', RoleSchema);
 
 
 export {
 	Products,
-	Users
+	Users,
+	Roles
 }

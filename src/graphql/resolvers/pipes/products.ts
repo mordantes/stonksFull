@@ -1,4 +1,4 @@
-import { Products } from "../../mongo";
+import { Products } from "../../../mongo";
 
 
 export const productsWithFilter =  (term?: string ) => [

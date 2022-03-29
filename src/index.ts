@@ -1,22 +1,24 @@
-import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { resolvers } from './graphql/resolvers';
-import { typeDefs } from './graphql/index';
+import express  from 'express'
+import { graphqlHTTP } from 'express-graphql'
+import { typeDefs } from './graphql'
+import {resolvers} from './graphql/resolvers/index'
+import { getContext } from './utils/getContext'
+import { getToken } from './utils/getToken'
+const expressPlayground =
+    require('graphql-playground-middleware-express').default;
+
+const app = express()
 
 
-const server = new ApolloServer({ typeDefs, resolvers });
+app.use('/graphql',  graphqlHTTP(async(req : any)=>{
+    return {
+        schema: typeDefs,
+        rootValue: resolvers,
+        graphiql: true,
+        context: ()=>  getContext(req)
+    }
+}))
 
-const app = express();
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
-server.start().then(res=> server.applyMiddleware({ app }))
-
-
-
-app.get('/', (req, res) => {
-    console.log("Apollo GraphQL Express server is ready");
-});
-
-
-app.listen({ port: 4000 }, () => {
-    console.log(`Server is running at http://localhost:4000${server.graphqlPath}`);
-});
+app.listen(4000)

@@ -1,3 +1,4 @@
+import { isEmail } from "class-validator"
 import { Schema, model , Types} from "mongoose"
 import { Products } from ".."
 
@@ -25,11 +26,8 @@ export const UserSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
-	},
-	name: { 
-		type: String,
-		required: true,
-		minlength: 6,
+		minlength: 10,
+		validate: [(val: string) => isEmail(val) , 'Value is not Email']
 	},
 	role: {
 		type : String,

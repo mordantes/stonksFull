@@ -1,7 +1,6 @@
-import { gql } from 'apollo-server-express';
+import { buildSchema } from 'graphql';
 
-
-export const typeDefs = gql`
+export const typeDefs = buildSchema(`
     type Product{
 		_id: Int,
 		goodName: String,
@@ -13,7 +12,10 @@ export const typeDefs = gql`
 		prices: [Prices],
         sub: Float
     }
-
+    type Role {
+        role : String # ADMIN or USER or GUEST
+        cartSize : Int!
+    }
     type Prices{
         date:String
         price:Int
@@ -26,70 +28,42 @@ export const typeDefs = gql`
         totalEndValue: Int
         totalProducts: Int
     }
-
     type User {
         _id : String
-        name : String
         password : String
         role : String # ADMIN or USER or GUEST
         email : String
         products: [Int]
     }
-
-    input NewUser{
-        name : String
-        password : String
-        email : String
-    }
-    type NewUserPayload{
-        user: User
-    }
-    type DeleteUserPayload{
-        id: ID
-        deleted: Boolean
-    }
     input ChangeNameInput{
-        id : ID
-        newName : String
+        id : ID!
+        newName : String!
     }
-    type ChangeNamePayload{
-        newName : String
-        changed: Boolean
-    }
-
-    input ChangePwdInput{
-        id : ID
-        password : String
-    }
-    type ChangePwdPayload{
-        changed: Boolean
-    }
-    input DeleteUser{
-        id: ID
+    input Credentials {
+        email : String!
+        password : String!
     }
     input ChangeRoleInput{
-        id: ID
-        newRole : String# "ADMIN" or "USER" or "GUEST"
+        id: ID!
+        newRole : String# "ADMIN" or "USER" or "GUEST"!
     }
     input AddProductInput{
-        id: ID
-        productId : Int
+        id: ID!
+        productId : Int!
     }
-
     type Query{
         getProductsByName(term:String):[Product]
-        findProduct(id:ID):Product
+        getProductById(id:ID):Product
         getCategories: [Category]
         getUsers : [User]
-        getUserById(userId: ID): User
+        getUserById(userId: String!): User
+        getRoles: [Role]
     }
     type Mutation{
-        createUser(input:NewUser!): User
-        deleteUser(input: DeleteUser): DeleteUserPayload
-        changePassword(input: ChangePwdInput) : ChangePwdPayload
-        changeName(input: ChangeNameInput) : User
-        changeRole(input : ChangeRoleInput) : User
-        addProduct(input: AddProductInput): User
+        signUp(input:Credentials!): String!
+        signIn(input: Credentials!) : String!
+        addProduct(input: AddProductInput!): User
+        deleteUser(_id: String!): Boolean
+        changeRole(input : ChangeRoleInput!) : User
     }
-
-`;
+`);
