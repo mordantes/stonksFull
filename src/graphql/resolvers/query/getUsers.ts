@@ -1,14 +1,13 @@
 import { Request } from "express"
-import {  Roles, Users } from "../../../mongo"
+import { BadRBAType } from "../../customErrors"
+import { ContextFn } from "src/utils/types"
+import { Users } from "../../../mongo"
+import { GQLResolver } from "../types"
 
-
-
-export const getUsers = async(params: any, context: any, req : Request) => {
+export const getUsers : GQLResolver= async(params: any, context: ContextFn, req : Request) => {
 	try{
-		const { error } = await context()
-		if (error) throw error
 		return await Users.find()
 	}catch(e){
-		return new Error(e as string)
+		throw new Error(e as string)
 	}
 }

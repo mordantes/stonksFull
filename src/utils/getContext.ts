@@ -1,12 +1,13 @@
 import { getToken } from "./getToken";
-import { Request }  from 'express'
+import { ContextFn } from "./types";
+import { UnAuthorisedError } from "../graphql/customErrors/index";
 
 
-export const getContext = async(req : any) => {
+export const getContext: ContextFn = async(req) => {
 	try{
 		const token = req.headers.authorization;
 		if (!token){
-			return { error : 'Permission denied.'}
+			throw UnAuthorisedError
 		}  
 		const verify = await getToken(token)
 		return { token : verify}

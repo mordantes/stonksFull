@@ -3,7 +3,6 @@ import { graphqlHTTP } from 'express-graphql'
 import { typeDefs } from './graphql'
 import {resolvers} from './graphql/resolvers/index'
 import { getContext } from './utils/getContext'
-import { getToken } from './utils/getToken'
 const expressPlayground =
     require('graphql-playground-middleware-express').default;
 

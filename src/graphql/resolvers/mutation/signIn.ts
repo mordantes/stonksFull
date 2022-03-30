@@ -4,6 +4,7 @@ import { compareSync, hashSync } from 'bcrypt'
 import {Users} from '../../../mongo'
 import {sign} from 'jsonwebtoken'
 import { SignCredentials } from '../types'
+import { BadCredentialsErrror, NotFoundError } from '../../customErrors'
 
 
 export const signIn = async({input}: SignCredentials, req: Request)=> {
@@ -11,16 +12,15 @@ export const signIn = async({input}: SignCredentials, req: Request)=> {
 		const {email ,password} = input
 		const user = await Users.findOne({ email }) 
 		if (!user){
-			return new Error('Not exists!')
+			throw NotFoundError
 		}
 		const compare = compareSync(password, user.password)
 		if (!compare){
-			return new Error('Credentials is not correct!')
+			throw BadCredentialsErrror
 		}
-		return sign({ id: user._id }, process.env.SECRET as string, { expiresIn : '2 days'});
-		
+		return sign({ id: user._id , role: user.role, email: user.email}, process.env.SECRET as string, { expiresIn : '2 days'});
+	
 	}catch(e){
-		console.log(e)
-		throw e
+		throw new Error(e as string)
 	}
 }

@@ -18,7 +18,7 @@ export const signUp = async({input}: SignCredentials, req: Request)=> {
 		const hashed = hashSync(password, 12);
 		const newUser = new Users({ ...input, password : hashed})
 		await Users.bulkWrite([{ insertOne : { "document" : newUser } }])
-		return sign({ id: newUser._id}, process.env.SECRET as string, { expiresIn : '2 days'})
+		return sign({ id: newUser._id , role: newUser.role, email: newUser.email}, process.env.SECRET as string, { expiresIn : '2 days'})
 	}catch(e){
 		console.log(e)
 		throw e

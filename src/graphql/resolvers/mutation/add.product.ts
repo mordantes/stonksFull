@@ -1,6 +1,6 @@
 
 import { Request } from 'express'
-import { BadValueErrror } from '../../customErrors'
+import { BadCredentialsErrror } from '../../customErrors'
 import {Users, Products} from '../../../mongo'
 
 
@@ -16,7 +16,7 @@ export const addProduct = async({productId, userId}: { productId : number, userI
 			const newOne = await Users.findById(userId) 
 			return newOne
 		}
-		return BadValueErrror
+		return BadCredentialsErrror
 	}catch(e){
 		console.log(e)
 		return new Error(e as string)
